@@ -16,6 +16,7 @@ def create_app():
 
     # Load environment variables from the .env file so they are
     # accessible via os.getenv() below.
+    
     load_dotenv()
 
     # Secret key used by Flask for securely signing session cookies.
@@ -34,8 +35,11 @@ def create_app():
 
     # Register the routes from each Blueprint with the app object
     # and give a url prefix to each.
-    app.logger.info("create_app(): registering blueprints")
-    app.register_blueprint(simple_routes)
-    app.register_blueprint(ngos, url_prefix="/ngo")
+    
+    # olivia's routes:
+    app.register_blueprint(olivia, url_prefix="/olivia")
+    
+    # other routes:
+    # ...
 
     return app
