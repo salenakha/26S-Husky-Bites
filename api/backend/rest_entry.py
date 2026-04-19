@@ -36,10 +36,10 @@ def create_app():
     # Register the routes from each Blueprint with the app object
     # and give a url prefix to each.
     
-    # olivia's routes:
+    init_db(app)
+
+    app.logger.info("create_app(): registering blueprints")
     app.register_blueprint(olivia, url_prefix="/olivia")
-    
-    # other routes:
-    # ...
+    app.register_blueprint(jordan, url_prefix="/jordan")
 
     return app
