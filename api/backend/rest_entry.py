@@ -37,5 +37,7 @@ def create_app():
     app.logger.info("create_app(): registering blueprints")
     app.register_blueprint(simple_routes)
     app.register_blueprint(ngos, url_prefix="/ngo")
+    from backend.jordan.jordan import jordan
+    app.register_blueprint(jordan, url_prefix="/jordan")
 
     return app
