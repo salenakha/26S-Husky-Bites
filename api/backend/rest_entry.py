@@ -4,8 +4,8 @@ import os
 import logging
 
 from backend.db_connection import init_app as init_db
-from backend.simple.simple_routes import simple_routes
-from backend.ngos.ngo_routes import ngos
+from backend.olivia.olivia_routes import olivia
+from backend.jordan.jordan import jordan
 
 
 def create_app():
@@ -16,6 +16,7 @@ def create_app():
 
     # Load environment variables from the .env file so they are
     # accessible via os.getenv() below.
+    
     load_dotenv()
 
     # Secret key used by Flask for securely signing session cookies.
@@ -35,9 +36,7 @@ def create_app():
     # Register the routes from each Blueprint with the app object
     # and give a url prefix to each.
     app.logger.info("create_app(): registering blueprints")
-    app.register_blueprint(simple_routes)
-    app.register_blueprint(ngos, url_prefix="/ngo")
-    from backend.jordan.jordan import jordan
+    app.register_blueprint(olivia, url_prefix="/olivia")
     app.register_blueprint(jordan, url_prefix="/jordan")
 
     return app
