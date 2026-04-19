@@ -1,8 +1,19 @@
-# Spring 2026 CS 3200 Project Template
+# 🐾 HuskyBites
+<img width="1035" height="339" alt="Screenshot 2026-04-19 at 6 17 57 PM" src="https://github.com/user-attachments/assets/e3408c25-2f59-40e1-9a68-a74493acd17b" />
 
-This is a template repo for Dr. Fontenot's Spring 2026 CS 3200 Course Project.
-
-It includes most of the infrastructure setup (containers), sample databases, and example UI pages. Explore it fully and ask questions!
+### CS 3200 Spring 2026
+ 
+HuskyBites is a restaurant discovery and rating app built exclusively for Northeastern University students. Unlike general-purpose platforms like Yelp or Google Maps, HuskyBites only surfaces dining options within a 30-minute walk of the NU Boston campus — and every review comes from a fellow Husky.
+ 
+The app is designed around how students actually eat: fast decisions, dietary needs, tight schedules, and real peer recommendations. Key features include the **Husky Leaderboard** (top student-rated dishes at any restaurant), the **Between Class Recommendation** (fastest realistic meal option based on live wait times and service speed), and a robust **dietary and allergen tagging system**.
+ 
+## Team Members
+ 
+- Salena Kha
+- Shi En Leung
+- Lam Truong
+- Alston Si
+- Jaden Pham
 
 ## Prerequisites
 
@@ -37,69 +48,56 @@ It includes most of the infrastructure setup (containers), sample databases, and
 
 - The repo also contains a `docker-compose.yaml` file that is used to set up the Docker containers for the front end app, the REST API, and MySQL database. 
 
-## Suggestion for Learning the Project Code Base
+## Setting Up the Repo
+ 
+1. Clone the repository to your local machine:
+   ```bash
+   git clone https://github.com/salenakha/26S-Husky-Bites.git
+   cd 26S-Husky-Bites
+   ```
+ 
+1. Set up the `.env` file in the `api/` folder based on the `.env.template` file.
+   1. Make a copy of `.env.template` and name it `.env`.
+   1. Open the new `.env` file.
+   1. On the last line, delete the `<...>` placeholder text and set a password. Don't reuse passwords from other services.
+1. Start all containers:
+   ```bash
+   docker compose up -d
+   ```
+ 
+   This will spin up three services:
+   - **db** — MySQL database, auto-executes all `.sql` files in `database-files/` on first creation
+   - **api** — Flask REST API, running on `http://localhost:4000`
+   - **app** — Streamlit frontend, running on `http://localhost:8501`
 
-If you are not familiar with web app development, this code base might be confusing. But don't worry, we'll get through it together. Here are some suggestions for learning the code base:
-
-1. Start by exploring the `./app` directory. This is where the Streamlit app is located. The Streamlit app is a Python-based web app that is used to interact with the user. It's a great way to build a simple web app without having to learn a lot of web development.
-1. Next, explore the `./api` directory. This is where the Flask REST API is located. The REST API is used to interact with the database and perform other server-side tasks. You might also consider this the "application logic" or "business logic" layer of your app. 
-1. Finally, explore the `./database-files` directory. This is where the SQL scripts are located that will be used to initialize the MySQL database.
-1. Bonus: If you want to have a totally separate copy of the Template Repo on your laptop that you can use to explore and try things without messing up your team repo, see *Setting Up a Personal Testing Repo (Optional)* section below. 
-
-## Setting Up the Repos
-<details>
-<summary>Setting Up a Personal Sandbox Repo (Optional)</summary>
-
-### Setting Up a Personal Sandbox Repo (Optional)
-
-**Before you start**: You need to have a GitHub account and a terminal-based git client or GUI Git client such as GitHub Desktop or the Git plugin for VSCode.
-
-1. Clone this repo to your local machine.
-   1. You can do this by clicking the green "Code" button on the top right of the repo page and copying the URL. Then, in your terminal, run `git clone <URL>`.
-   1. Or, you can use the GitHub Desktop app to clone the repo. See [this page](https://docs.github.com/en/desktop/adding-and-cloning-repositories/cloning-a-repository-from-github-to-github-desktop) of the GitHub Desktop Docs for more info. 
-1. Open the repository folder in VSCode.
-1. Set up the `.env` file in the `api` folder based on the `.env.template` file.
-   1. Make a copy of the `.env.template` file and name it `.env`. 
-   1. Open the new `.env` file. 
-   1. On the last line, delete the `<...>` placeholder text, and put a password. Don't reuse any passwords you use for any other services (email, etc.) 
-1. For running the testing containers (for your personal repo), you will tell `docker compose` to use a different configuration file than the typical one.  The one you will use for testing is `sandbox.yaml`.
-   1. `docker compose -f sandbox.yaml up -d` to start all the containers in the background
-   1. `docker compose -f sandbox.yaml down` to shutdown and delete the containers
-   1. `docker compose -f sandbox.yaml up db -d` only start the database container (replace db with api or app for the other two services as needed)
-   1. `docker compose -f sandbox.yaml stop` to "turn off" the containers but not delete them.
-</details>
-
-### Setting Up Your Team's Repo
-
-**Before you start**: As a team, one person needs to assume the role of _Team Project Repo Owner_.
-
-1. The Team Project Repo Owner needs to **fork** this template repo into their own GitHub account **and give the repo a name consistent with your project's name**. If you're worried that the repo is public, don't. Every team is doing a different project.
-1. In the newly forked team repo, the Team Project Repo Owner should go to the **Settings** tab, choose **Collaborators and Teams** on the left-side panel. Add each of your team members to the repository with Write access.
-
-**Remaining Team Members**
-
-1. Each of the other team members will receive an invitation to join.
-1. Once you have accepted the invitation, you should clone the Team's Project Repo to your local machine.
-1. Set up the `.env` file in the `api` folder based on the `.env.template` file.
-1. For running the testing containers (for your team's repo):
-   1. `docker compose up -d` to start all the containers in the background
-   1. `docker compose down` to shutdown and delete the containers
-   1. `docker compose up db -d` only start the database container (replace db with api or app for the other two services as needed)
-   1. `docker compose stop` to "turn off" the containers but not delete them.
-
-**Note:** You can also use the Docker Desktop GUI to start and stop the containers after the first initial run.
+## Docker Commands Reference
+ 
+```bash
+# Start all containers in the background
+docker compose up -d
+ 
+# Shut down and delete all containers
+docker compose down
+ 
+# Start only the database container
+docker compose up db -d
+ 
+# Stop containers without deleting them
+docker compose stop
+ 
+# Recreate the database container (required after any SQL file changes)
+docker compose down db -v && docker compose up db -d
+```
+ 
+> **Important:** The MySQL container only executes `.sql` files in `database-files/` when it is first **created**, not when it is restarted. If you update the schema or mock data, you must recreate the container using the last command above.
 
 ## Important Tips
-
-1. In general, any changes you make to the api code base (REST API) or the Streamlit app code should be *hot reloaded* when the files are saved.  This means that the changes should be immediately available.  
-   1. Don't forget to click the **Always Rerun** button in the browser tab of the Streamlit app for it to reload with changes.
-   1. Sometimes, a bug in the code will shut the containers down.  If this is the case, try and fix the bug in the code.  Then you can restart the `app` container in Docker Desktop or restart all the containers with `docker compose restart` (no *-d* flag).
-1. The MySQL Container is different. 
-   1. When the MySQL container is ***created*** the first time, it will execute any `.sql` files in the `./database-files` folder. **Important:** it will execute them in alphabetical order.  
-   1. The MySQL Container's log files are your friend! Remember, you can access them in Docker Desktop by going to the MySQL Container, and clicking on the `Logs` tab.  If there are errors in your .sql files as it is trying to run them, there will be a message in the logs. You can search 🔍 for `Error` to find them more quickly. 
-   1. If you need to update anything in any of your SQL files, you **MUST** recreate the MySQL container (rather than just stopping and restarting it).  You can recreate the MySQL container by using the following command: `docker compose down db -v && docker compose up db -d`. 
-      1. `docker compose down db -v` stops and deletes the MySQL container and the volume attached to it. 
-      1. `docker compose up db -d` will create a new db container and re-run the files in the `database-files` folder. 
+ 
+- Any changes made to the Flask API or Streamlit app code are hot-reloaded when files are saved.
+  - In the Streamlit browser tab, click **Always Rerun** so changes are reflected immediately.
+  - If a bug shuts a container down, fix the bug and restart with `docker compose restart`.
+- The MySQL container logs are your friend. Access them in Docker Desktop under the container's **Logs** tab. Search for `Error` to quickly find issues with your `.sql` files.
+- `.sql` files in `database-files/` are executed in **alphabetical order**.
 
 ## Handling User Role Access and Control
 
@@ -118,18 +116,6 @@ Wrapping your head around this will take a little time and exploration of this c
 1. The pages are organized by Role. Pages that start with a `0` are related to the _Political Strategist_ role. Pages that start with a `1` are related to the _USAID worker_ role. And, pages that start with a `2` are related to The _System Administrator_ role.
 
 
-## (Completely Optional) Incorporating ML Models into your Project
-
-_Note_: This project only contains the infrastructure for a hypothetical ML model.
-
-1. Collect and preprocess necessary datasets for your ML models.
-1. Build, train, and test your ML model in a Jupyter Notebook.
-   - You can store your datasets in the `datasets` folder. You can also store your Jupyter Notebook in the `ml-src` folder.
-1. Once your team is happy with the model's performance, convert your Jupyter Notebook code for the ML model to a pure Python script.
-   - You can include the `training` and `testing` functionality as well as the `prediction` functionality.
-   - Develop and test this pure Python script first in the `ml-src` folder.
-   - You may or may not need to include data cleaning, though.
-1. Review the `api/backend/ml_models` module. In this folder,
-   - We've put a sample (read _fake_) ML model in the `model01.py` file. The `predict` function will be called by the Flask REST API to perform '_real-time_' prediction based on model parameter values that are stored in the database. **Important**: you would never want to hard code the model parameter weights directly in the prediction function.
-1. The prediction route for the REST API is in `api/backend/simple/simple_routes.py`. Basically, it accepts two URL parameters and passes them to the `prediction` function in the `ml_models` module. The `prediction` route/function packages up the value(s) it receives from the model's `predict` function and sends it back to Streamlit as JSON.
-1. Back in Streamlit, check out `app/src/pages/11_Prediction.py`. Here, two numeric input fields are created. When the button is pressed, it makes a request to the REST API at `/prediction/{var_01}/{var_02}` and passes the values from the two inputs as URL path parameters. It gets back the results from the route and displays them.
+## Demo Video
+ 
+[Watch the HuskyBites demo -- COMING SOON]
