@@ -3,7 +3,7 @@
 
 ### CS 3200 Spring 2026
  
-HuskyBites is a restaurant discovery and rating app built exclusively for Northeastern University students. Unlike general-purpose platforms like Yelp or Google Maps, HuskyBites only surfaces dining options within a 30-minute walk of the NU Boston campus — and every review comes from a fellow Husky.
+HuskyBites is a restaurant discovery and rating app built exclusively for Northeastern University students. Unlike general-purpose platforms like Yelp or Google Maps, HuskyBites only surfaces dining options within a 30-minute walk of the NU Boston campus, and every review comes from a fellow Husky.
  
 The app is designed around how students actually eat: fast decisions, dietary needs, tight schedules, and real peer recommendations. Key features include the **Husky Leaderboard** (top student-rated dishes at any restaurant), the **Between Class Recommendation** (fastest realistic meal option based on live wait times and service speed), and a robust **dietary and allergen tagging system**.
  
