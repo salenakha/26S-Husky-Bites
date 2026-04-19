@@ -3,9 +3,7 @@ from backend.db_connection import db
 
 jordan = Blueprint('jordan', __name__)
 
-# ============================================================
 # RESTAURANTS
-# ============================================================
 
 # [Jordan-1] GET /jordan/restaurants
 # Return a list of all restaurants with name, location, status, cuisine, last_updated
@@ -144,9 +142,7 @@ def update_restaurant_status(restaurant_id):
     return make_response(jsonify({'message': f'Restaurant status set to {new_status}'}), 200)
 
 
-# ============================================================
 # REVIEWS
-# ============================================================
 
 # [Jordan-4] GET /jordan/reviews
 # Return all reviews; optionally filter by review_status
@@ -210,9 +206,7 @@ def delete_review(review_id):
     return make_response(jsonify({'message': 'Review permanently deleted'}), 200)
 
 
-# ============================================================
 # ANALYTICS
-# ============================================================
 
 # [Jordan-6] GET /jordan/analytics/activity-metrics
 # Return Activity_Metric rows showing DB growth over time
