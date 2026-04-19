@@ -123,3 +123,4 @@ insert into Restaurant_Dietary_Tag (restaurant_id, dietary_tag_id) values (36, 4
 insert into Restaurant_Dietary_Tag (restaurant_id, dietary_tag_id) values (3, 2);
 insert into Restaurant_Dietary_Tag (restaurant_id, dietary_tag_id) values (21, 6);
 insert into Restaurant_Dietary_Tag (restaurant_id, dietary_tag_id) values (15, 2);
+
