@@ -37,7 +37,21 @@ def create_app():
     app.logger.info("create_app(): registering blueprints")
     app.register_blueprint(simple_routes)
     app.register_blueprint(ngos, url_prefix="/ngo")
-    from backend.jordan.jordan import jordan
+
+    # Jordan — system admin routes (restaurants, reviews, activity metrics)
+    from backend.jordan.jordan_routes import jordan
     app.register_blueprint(jordan, url_prefix="/jordan")
+
+    # Marcus — data analyst routes (trends, crowd levels, export, performance)
+    from backend.marcus.marcus_routes import marcus_routes
+    app.register_blueprint(marcus_routes, url_prefix="/marcus")
+
+    # Olivia — international student routes (discovery, filtering, favorites)
+    from backend.olivia.olivia_routes import olivia
+    app.register_blueprint(olivia, url_prefix="/olivia")
+
+    # Maya — pre-med student routes (wait times, halal, leaderboard, reviews)
+    from backend.maya.maya_routes import maya
+    app.register_blueprint(maya, url_prefix="/maya")
 
     return app
