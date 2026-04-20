@@ -4,8 +4,8 @@ import os
 import logging
 
 from backend.db_connection import init_app as init_db
-from backend.simple.simple_routes import simple_routes
-from backend.ngos.ngo_routes import ngos
+from backend.olivia.olivia_routes import olivia
+from backend.jordan.jordan import jordan
 
 
 def create_app():
@@ -14,6 +14,9 @@ def create_app():
     app.logger.setLevel(logging.DEBUG)
     app.logger.info('API startup')
 
+    # Load environment variables from the .env file so they are
+    # accessible via os.getenv() below.
+    
     load_dotenv()
 
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
@@ -27,8 +30,8 @@ def create_app():
     init_db(app)
 
     app.logger.info("create_app(): registering blueprints")
-    app.register_blueprint(simple_routes)
-    app.register_blueprint(ngos, url_prefix="/ngo")
+    app.register_blueprint(olivia, url_prefix="/olivia")
+    app.register_blueprint(jordan, url_prefix="/jordan")
 
     # Jordan — system admin routes
     from backend.jordan.jordan_routes import jordan
