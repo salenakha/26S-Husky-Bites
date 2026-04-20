@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, make_response
-from backend.db_connection import db
+
+from backend.db_connection import get_db
 
 jordan = Blueprint('jordan', __name__)
 
@@ -9,7 +10,7 @@ jordan = Blueprint('jordan', __name__)
 # Return a list of all restaurants with name, location, status, cuisine, last_updated
 @jordan.route('/restaurants', methods=['GET'])
 def get_all_restaurants():
-    cursor = db.get_db().cursor()
+    cursor = get_db().cursor()
     query = '''
         SELECT r.restaurant_id, r.name, r.location, r.status,
                c.cuisine_name, r.last_updated, r.halal_certified,

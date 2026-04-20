@@ -1,3 +1,5 @@
+USE huskybites;
+
 insert into Favorite (Favorite_id, user_id, restaurant_id, saved_date) values (1, 22, 2, '2026-02-27');
 insert into Favorite (Favorite_id, user_id, restaurant_id, saved_date) values (2, 23, 14, '2025-05-28');
 insert into Favorite (Favorite_id, user_id, restaurant_id, saved_date) values (3, 1, 52, '2025-12-17');

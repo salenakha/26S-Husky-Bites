@@ -1,4 +1,4 @@
-USE restaurant_db;
+USE huskybites;
 
 INSERT INTO Leaderboard_Entry (entry_id, restaurant_id, rank_num, score_avg) VALUES
   (1, 126, 1, 3.9),

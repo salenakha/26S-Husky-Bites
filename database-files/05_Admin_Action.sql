@@ -1,3 +1,5 @@
+USE huskybites;
+
 insert into Admin_Action (user_id, target_id, action_type, action_timestamp, target_entity, action_id) values (33, 28, 'deactivate', '2025-08-30', 'review', 1);
 insert into Admin_Action (user_id, target_id, action_type, action_timestamp, target_entity, action_id) values (3, 19, 'delete', '2026-02-10', 'restaurant', 2);
 insert into Admin_Action (user_id, target_id, action_type, action_timestamp, target_entity, action_id) values (22, 38, 'add', '2025-10-28', 'restaurant', 3);

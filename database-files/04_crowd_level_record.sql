@@ -1,4 +1,4 @@
-USE restaurant_db;
+USE huskybites;
 
 INSERT INTO Crowd_Level_Record (crowd_record_id, restaurant_id, crowd_level, recorded_at) VALUES
   (1, 43, 'medium', '2026-04-19 11:39:00'),
