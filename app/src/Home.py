@@ -12,25 +12,27 @@ st.session_state['authenticated'] = False
 SideBarLinks(show_home=True)
 
 logger.info("Loading the Home page of the app")
+st.title('HuskyBites 🐾')
+st.write('#### Hi! As which user would you like to log in?')
 
-# add logo here
-with open("assets/logo.svg", "r") as f:
-    svg = f.read()
-st.markdown(svg, unsafe_allow_html=True)
-
-st.write("## Welcome to HuskyBites")
-st.write("#### The restaurant discovery app built for Northeastern students.")
-st.write("---")
-st.write("#### Who are you today?")
+if st.button("Act as Olivia, an International Student",
+             type='primary',
+             use_container_width=True):
+    st.session_state['authenticated'] = True
+    st.session_state['role'] = 'olivia'
+    st.session_state['first_name'] = 'Olivia'
+    st.session_state['user_id'] = 42
+    logger.info("Logging in as Olivia — International Student")
+    st.switch_page('pages/00_Olivia_Home.py')
 
 if st.button("Olivia: International Student",
              type='primary',
              use_container_width=True):
     st.session_state['authenticated'] = True
-    st.session_state['role'] = 'student'
-    st.session_state['first_name'] = 'Olivia'
-    logger.info("Logging in as Olivia (International Student)")
-    st.switch_page('pages/00_Olivia_Home.py')
+    st.session_state['role'] = 'pol_strat_advisor'
+    st.session_state['first_name'] = 'John'
+    logger.info("Logging in as Political Strategy Advisor Persona")
+    st.switch_page('pages/00_Pol_Strat_Home.py')
 
 if st.button("Jordan: System Administrator",
              type='primary',
