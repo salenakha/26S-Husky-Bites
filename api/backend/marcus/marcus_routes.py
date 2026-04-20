@@ -1,67 +1,42 @@
 from flask import Blueprint, jsonify, request, current_app
-from backend.db_connection import get_db
 from mysql.connector import Error
+
+from backend.db_connection import get_db
 
 marcus_routes = Blueprint('marcus_routes', __name__)
 
 
-# [Marcus-1] GET /marcus/restaurants/<id>/rating-trends
-# Return avg rating grouped by date so Marcus can track quality over time
-@marcus_routes.route('/restaurants/<int:restaurant_id>/rating-trends', methods=['GET'])
-def get_rating_trends(restaurant_id):
+# [Marcus-1] GET /marcus/trends
+# Return avg rating trends across all restaurants or a summary
+@marcus_routes.route('/trends', methods=['GET'])
+def get_rating_trends_summary():
     cursor = get_db().cursor(dictionary=True)
     try:
-        current_app.logger.info(f'GET /marcus/restaurants/{restaurant_id}/rating-trends')
+        current_app.logger.info('GET /marcus/trends')
         cursor.execute('''
             SELECT  review_date,
                     ROUND(AVG(rating), 2) AS avg_rating,
-                    COUNT(*)              AS review_count
+                    COUNT(*)              AS total_reviews
             FROM    Review
-            WHERE   restaurant_id = %s
-              AND   review_status = 'approved'
+            WHERE   review_status = 'approved'
             GROUP BY review_date
             ORDER BY review_date ASC
-        ''', (restaurant_id,))
+        ''')
         return jsonify(cursor.fetchall()), 200
     except Error as e:
-        current_app.logger.error(f'Database error in get_rating_trends: {e}')
+        current_app.logger.error(f'Database error in get_rating_trends_summary: {e}')
         return jsonify({'error': str(e)}), 500
     finally:
         cursor.close()
 
 
-# [Marcus-2] GET /marcus/restaurants/<id>/crowd-levels
-# Return crowd level records broken down by hour and day name
-@marcus_routes.route('/restaurants/<int:restaurant_id>/crowd-levels', methods=['GET'])
-def get_crowd_levels(restaurant_id):
-    cursor = get_db().cursor(dictionary=True)
-    try:
-        current_app.logger.info(f'GET /marcus/restaurants/{restaurant_id}/crowd-levels')
-        cursor.execute('''
-            SELECT  crowd_record_id,
-                    crowd_level,
-                    recorded_at,
-                    HOUR(recorded_at)    AS hour_of_day,
-                    DAYNAME(recorded_at) AS day_name
-            FROM    Crowd_Level_Record
-            WHERE   restaurant_id = %s
-            ORDER BY recorded_at ASC
-        ''', (restaurant_id,))
-        return jsonify(cursor.fetchall()), 200
-    except Error as e:
-        current_app.logger.error(f'Database error in get_crowd_levels: {e}')
-        return jsonify({'error': str(e)}), 500
-    finally:
-        cursor.close()
-
-
-# [Marcus-3] GET /marcus/wait-time-vs-rating
+# [Marcus-2] GET /marcus/waittime-ratings
 # Return avg wait time vs avg rating per restaurant for correlation analysis
-@marcus_routes.route('/wait-time-vs-rating', methods=['GET'])
+@marcus_routes.route('/waittime-ratings', methods=['GET'])
 def get_wait_vs_rating():
     cursor = get_db().cursor(dictionary=True)
     try:
-        current_app.logger.info('GET /marcus/wait-time-vs-rating')
+        current_app.logger.info('GET /marcus/waittime-ratings')
         cursor.execute('''
             SELECT  r.restaurant_id,
                     r.name,
@@ -69,15 +44,52 @@ def get_wait_vs_rating():
                     ROUND(AVG(rv.rating), 2)       AS avg_rating,
                     COUNT(rv.review_id)            AS total_reviews
             FROM    Restaurant r
-            JOIN    Wait_Time_Record w  ON w.restaurant_id  = r.restaurant_id
-            JOIN    Review rv           ON rv.restaurant_id = r.restaurant_id
-            WHERE   rv.review_status = 'approved'
+            LEFT JOIN Wait_Time_Record w ON w.restaurant_id  = r.restaurant_id
+            LEFT JOIN Review rv          ON rv.restaurant_id = r.restaurant_id
+                                       AND rv.review_status = 'approved'
             GROUP BY r.restaurant_id, r.name
+            HAVING avg_wait_minutes IS NOT NULL AND avg_rating IS NOT NULL
             ORDER BY avg_wait_minutes DESC
         ''')
         return jsonify(cursor.fetchall()), 200
     except Error as e:
-        current_app.logger.error(f'Database error in get_wait_vs_rating: {e}')
+        current_app.logger.error(f'Database error in get_waittime_ratings: {e}')
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+
+
+# [Marcus-3] GET /marcus/export
+# Return anonymized approved reviews (no user_id) for external analysis
+# Optional: ?restaurant_id=7 to filter to one restaurant
+@marcus_routes.route('/export', methods=['GET'])
+def export_reviews():
+    cursor = get_db().cursor(dictionary=True)
+    try:
+        current_app.logger.info('GET /marcus/export')
+        restaurant_id = request.args.get('restaurant_id', None)
+
+        query = '''
+            SELECT  rv.review_id,
+                    rv.restaurant_id,
+                    r.name     AS restaurant_name,
+                    rv.rating,
+                    rv.review_text,
+                    rv.review_date
+            FROM    Review rv
+            JOIN    Restaurant r ON r.restaurant_id = rv.restaurant_id
+            WHERE   rv.review_status = 'approved'
+        '''
+        params = []
+        if restaurant_id:
+            query += ' AND rv.restaurant_id = %s'
+            params.append(restaurant_id)
+
+        query += ' ORDER BY rv.review_date DESC'
+        cursor.execute(query, params)
+        return jsonify(cursor.fetchall()), 200
+    except Error as e:
+        current_app.logger.error(f'Database error in export_reviews: {e}')
         return jsonify({'error': str(e)}), 500
     finally:
         cursor.close()
@@ -111,47 +123,8 @@ def get_dietary_coverage():
         cursor.close()
 
 
-# [Marcus-5] GET /marcus/reviews/export
-# Return anonymized approved reviews (no user_id) for external analysis
-# Optional: ?restaurant_id=7 to filter to one restaurant
-@marcus_routes.route('/reviews/export', methods=['GET'])
-def export_reviews():
-    cursor = get_db().cursor(dictionary=True)
-    try:
-        current_app.logger.info('GET /marcus/reviews/export')
-        restaurant_id = request.args.get('restaurant_id', None)
-
-        # WHERE 1=1 lets us append AND clauses cleanly — same pattern as ngo_routes.py
-        query = '''
-            SELECT  rv.review_id,
-                    rv.restaurant_id,
-                    r.name     AS restaurant_name,
-                    rv.rating,
-                    rv.review_text,
-                    rv.review_date
-            FROM    Review rv
-            JOIN    Restaurant r ON r.restaurant_id = rv.restaurant_id
-            WHERE   1=1
-            AND     rv.review_status = 'approved'
-        '''
-        params = []
-        if restaurant_id:
-            query += ' AND rv.restaurant_id = %s'
-            params.append(restaurant_id)
-
-        query += ' ORDER BY rv.review_date DESC'
-        cursor.execute(query, params)
-        return jsonify(cursor.fetchall()), 200
-    except Error as e:
-        current_app.logger.error(f'Database error in export_reviews: {e}')
-        return jsonify({'error': str(e)}), 500
-    finally:
-        cursor.close()
-
-
-# [Marcus-6] GET /marcus/restaurant-performance
+# [Marcus-5] GET /marcus/restaurant-performance
 # Return restaurants ranked by avg rating with price and cuisine breakdown
-# Optional: ?limit=N (default 10)
 @marcus_routes.route('/restaurant-performance', methods=['GET'])
 def get_restaurant_performance():
     cursor = get_db().cursor(dictionary=True)

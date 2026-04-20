@@ -1,3 +1,5 @@
+USE huskybites;
+
 insert into Review (user_id, restaurant_id, rating, review_text, review_date, review_status, review_id) values (23, 46, 9.0, 'Morbi odio odio, elementum eu, interdum eu, tincidunt in, leo. Maecenas pulvinar lobortis est. Phasellus sit amet erat. Nulla tempus. Vivamus in felis eu sapien cursus vestibulum. Proin eu mi. Nulla ac enim. In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem.', '2025-07-20', 'approved', 1);
 insert into Review (user_id, restaurant_id, rating, review_text, review_date, review_status, review_id) values (21, 18, 2.1, 'Quisque porta volutpat erat. Quisque erat eros, viverra eget, congue eget, semper rutrum, nulla. Nunc purus. Phasellus in felis. Donec semper sapien a libero. Nam dui.', '2025-08-04', 'removed', 2);
 insert into Review (user_id, restaurant_id, rating, review_text, review_date, review_status, review_id) values (20, 54, 6.4, 'Nulla facilisi.', '2026-04-16', 'approved', 3);

@@ -1,3 +1,5 @@
+USE huskybites;
+
 insert into User (user_id, username, role, allergy_preference, dietary_preference) values (1, 'gmeriot0', 'int_student', 'shellfish-free', 'none');
 insert into User (user_id, username, role, allergy_preference, dietary_preference) values (2, 'aclaybourne1', 'analyst', 'shellfish-free', 'halal');
 insert into User (user_id, username, role, allergy_preference, dietary_preference) values (3, 'pferrige2', 'int_student', 'soy-free', 'vegetarian');

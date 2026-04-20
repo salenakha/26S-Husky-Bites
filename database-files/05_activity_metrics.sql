@@ -1,3 +1,5 @@
+USE huskybites;
+
 insert into Activity_Metric (metric_id, metric_date, reviews_count, active_users_count, restaurant_count) values (1, '2013-01-01 00:00:00', 14, 99, 2);
 insert into Activity_Metric (metric_id, metric_date, reviews_count, active_users_count, restaurant_count) values (2, '2016-01-01 00:00:00', 54, 62, 42);
 insert into Activity_Metric (metric_id, metric_date, reviews_count, active_users_count, restaurant_count) values (3, '2018-01-01 00:00:00', 50, 45, 9);

@@ -1,4 +1,5 @@
-USE restaurant_db;
+CREATE DATABASE IF NOT EXISTS huskybites;
+USE huskybites;
 
 DROP TABLE IF EXISTS Restaurant_Dietary_Tag;
 DROP TABLE IF EXISTS Activity_Metric;
@@ -130,7 +131,7 @@ CREATE TABLE Activity_Metric (
 CREATE TABLE Restaurant_Dietary_Tag (
                                         restaurant_id INT,
                                         dietary_tag_id INT,
-                                        PRIMARY KEY (restaurant_id, dietary_tag_id),
+                                        UNIQUE (restaurant_id, dietary_tag_id),
                                         FOREIGN KEY (restaurant_id) REFERENCES Restaurant(restaurant_id),
                                         FOREIGN KEY (dietary_tag_id) REFERENCES Dietary_Tag(dietary_tag_id)
 );

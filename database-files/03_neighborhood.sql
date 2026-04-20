@@ -1,3 +1,5 @@
+USE huskybites;
+
 insert into Neighborhood (neighborhood_id, neighborhood_name) values (1, 'Longwood');
 insert into Neighborhood (neighborhood_id, neighborhood_name) values (2, 'Beacon Hill');
 insert into Neighborhood (neighborhood_id, neighborhood_name) values (3, 'Brookline');

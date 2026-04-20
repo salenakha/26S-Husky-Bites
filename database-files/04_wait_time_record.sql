@@ -1,4 +1,4 @@
-USE restaurant_db;
+USE huskybites;
 
 INSERT INTO Wait_Time_Record (wait_time_id, restaurant_id, estimated_wait_time, wait_minutes, recorded_at, updated_time, day_type) VALUES
   (1, 29, 6, 9, '2026-02-12 14:08:00', '2026-04-01 10:43:00', 'weekend'),

@@ -1,3 +1,5 @@
+USE huskybites;
+
 insert into Dietary_Tag (dietary_tag_name, dietary_tag_category) values ('vegetarian', 'religious');
 insert into Dietary_Tag (dietary_tag_name, dietary_tag_category) values ('dairy-free', 'religious');
 insert into Dietary_Tag (dietary_tag_name, dietary_tag_category) values ('halal', 'allergen');

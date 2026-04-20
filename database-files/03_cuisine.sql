@@ -1,3 +1,5 @@
+USE huskybites;
+
 insert into Cuisine (cuisine_id, cuisine_name) values (1, 'Salvadoran');
 insert into Cuisine (cuisine_id, cuisine_name) values (2, 'Italian');
 insert into Cuisine (cuisine_id, cuisine_name) values (3, 'Mediterranean');

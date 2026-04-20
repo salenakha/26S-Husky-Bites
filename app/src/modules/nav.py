@@ -76,6 +76,20 @@ def ml_model_mgmt_nav():
         "pages/21_ML_Model_Mgmt.py", label="ML Model Management", icon="🏢"
     )
 
+# ---- Role: analyst (Marcus) --------------------------------------------------
+
+def marcus_home_nav():
+    st.sidebar.page_link("pages/20_Marcus_Home.py", label="Marcus Home", icon="📊")
+
+def trend_dashboard_nav():
+    st.sidebar.page_link("pages/21_Trend_Dashboard.py", label="Trend Dashboard", icon="📈")
+
+def sensitivity_analysis_nav():
+    st.sidebar.page_link("pages/22_Sensitivity_Analysis.py", label="Sensitivity Analysis", icon="⚖️")
+
+def export_data_nav():
+    st.sidebar.page_link("pages/23_Export_Data.py", label="Export Data", icon="📥")
+
 
 # ---- Sidebar assembly -------------------------------------------------------
 
@@ -114,6 +128,12 @@ def SideBarLinks(show_home=False):
         if st.session_state["role"] == "administrator":
             admin_home_nav()
             ml_model_mgmt_nav()
+        
+        if st.session_state["role"] == "analyst":
+            marcus_home_nav()
+            trend_dashboard_nav()
+            sensitivity_analysis_nav()
+            export_data_nav()
 
     # About link appears at the bottom for all roles
     about_page_nav()

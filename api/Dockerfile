@@ -10,5 +10,5 @@ COPY . .
 EXPOSE 4000
 
 # Run Python in unbuffered mode to ensure logs are immediately visible
-CMD ["python", "-u", "backend_app.py"]
+CMD ["python", "-u", "app.py"]
 
