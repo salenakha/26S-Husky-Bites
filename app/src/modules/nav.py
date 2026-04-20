@@ -77,6 +77,32 @@ def ml_model_mgmt_nav():
     )
 
 
+# ---- Role: olivia (international student) -----------------------------------
+
+def olivia_home_nav():
+    st.sidebar.page_link(
+        "pages/00_Olivia_Home.py", label="Olivia Home", icon="🐾"
+    )
+
+
+def recommendations_nav():
+    st.sidebar.page_link(
+        "pages/01_Recommendations.py", label="Recommendations", icon="🍽️"
+    )
+
+
+def filter_restaurants_nav():
+    st.sidebar.page_link(
+        "pages/02_Filter_Restaurants.py", label="Filter Restaurants", icon="🔍"
+    )
+
+
+def my_favorites_nav():
+    st.sidebar.page_link(
+        "pages/03_My_Favorites.py", label="My Favorites", icon="❤️"
+    )
+
+
 # ---- Sidebar assembly -------------------------------------------------------
 
 def SideBarLinks(show_home=False):
@@ -114,6 +140,12 @@ def SideBarLinks(show_home=False):
         if st.session_state["role"] == "administrator":
             admin_home_nav()
             ml_model_mgmt_nav()
+
+        if st.session_state["role"] == "olivia":
+            olivia_home_nav()
+            recommendations_nav()
+            filter_restaurants_nav()
+            my_favorites_nav()
 
     # About link appears at the bottom for all roles
     about_page_nav()
