@@ -10,7 +10,7 @@ jordan = Blueprint('jordan', __name__)
 # Return a list of all restaurants with name, location, status, cuisine, last_updated
 @jordan.route('/restaurants', methods=['GET'])
 def get_all_restaurants():
-    cursor = get_db().cursor()
+    cursor = get_db().cursor(dictionary=True)
     query = '''
         SELECT r.restaurant_id, r.name, r.location, r.status,
                c.cuisine_name, r.last_updated, r.halal_certified,
@@ -29,7 +29,7 @@ def get_all_restaurants():
 @jordan.route('/restaurants', methods=['POST'])
 def add_restaurant():
     data = request.json
-    cursor = db.get_db().cursor()
+    cursor = get_db().cursor(dictionary=True)
     query = '''
         INSERT INTO Restaurant (cuisine_id, neighborhood_id, name, location,
                                 status, hours, halal_certified, price_range,
@@ -51,7 +51,7 @@ def add_restaurant():
         data.get('dietary_options'),
         data.get('working_hours')
     ))
-    db.get_db().commit()
+    get_db().commit()
     return make_response(jsonify({'message': 'Restaurant added successfully',
                                   'restaurant_id': cursor.lastrowid}), 201)
 
@@ -60,7 +60,7 @@ def add_restaurant():
 # Return full detail for a single restaurant
 @jordan.route('/restaurants/<int:restaurant_id>', methods=['GET'])
 def get_restaurant(restaurant_id):
-    cursor = db.get_db().cursor()
+    cursor = get_db().cursor(dictionary=True)
     query = '''
         SELECT r.*, c.cuisine_name, n.neighborhood_name
         FROM Restaurant r
@@ -80,7 +80,7 @@ def get_restaurant(restaurant_id):
 @jordan.route('/restaurants/<int:restaurant_id>', methods=['PUT'])
 def update_restaurant(restaurant_id):
     data = request.json
-    cursor = db.get_db().cursor()
+    cursor = get_db().cursor(dictionary=True)
     query = '''
         UPDATE Restaurant
         SET location        = %s,
@@ -103,7 +103,7 @@ def update_restaurant(restaurant_id):
         data.get('atmosphere'),
         restaurant_id
     ))
-    db.get_db().commit()
+    get_db().commit()
     return make_response(jsonify({'message': 'Restaurant updated successfully'}), 200)
 
 
@@ -111,7 +111,7 @@ def update_restaurant(restaurant_id):
 # Hard-delete a duplicate or incorrect restaurant entry
 @jordan.route('/restaurants/<int:restaurant_id>', methods=['DELETE'])
 def delete_restaurant(restaurant_id):
-    cursor = db.get_db().cursor()
+    cursor = get_db().cursor(dictionary=True)
     # soft delete to preserve FK integrity with Reviews, Favorites, etc.
     query = '''
         UPDATE Restaurant
@@ -119,7 +119,7 @@ def delete_restaurant(restaurant_id):
         WHERE restaurant_id = %s
     '''
     cursor.execute(query, (restaurant_id,))
-    db.get_db().commit()
+    get_db().commit()
     return make_response(jsonify({'message': 'Restaurant deleted successfully'}), 200)
 
 
@@ -132,14 +132,14 @@ def update_restaurant_status(restaurant_id):
     allowed = ['open', 'closed', 'inactive', 'deleted']
     if new_status not in allowed:
         return make_response(jsonify({'error': f'Status must be one of {allowed}'}), 400)
-    cursor = db.get_db().cursor()
+    cursor = get_db().cursor(dictionary=True)
     query = '''
         UPDATE Restaurant
         SET status = %s, last_updated = CURDATE()
         WHERE restaurant_id = %s
     '''
     cursor.execute(query, (new_status, restaurant_id))
-    db.get_db().commit()
+    get_db().commit()
     return make_response(jsonify({'message': f'Restaurant status set to {new_status}'}), 200)
 
 
@@ -150,7 +150,7 @@ def update_restaurant_status(restaurant_id):
 @jordan.route('/reviews', methods=['GET'])
 def get_all_reviews():
     status_filter = request.args.get('status')  # e.g. ?status=approved
-    cursor = db.get_db().cursor()
+    cursor = get_db().cursor(dictionary=True)
     if status_filter:
         query = '''
             SELECT rv.review_id, rv.rating, rv.review_text, rv.review_date,
@@ -185,14 +185,14 @@ def update_review_status(review_id):
     allowed = ['approved', 'removed', 'pending']
     if new_status not in allowed:
         return make_response(jsonify({'error': f'Status must be one of {allowed}'}), 400)
-    cursor = db.get_db().cursor()
+    cursor = get_db().cursor(dictionary=True)
     query = '''
         UPDATE Review
         SET review_status = %s
         WHERE review_id = %s
     '''
     cursor.execute(query, (new_status, review_id))
-    db.get_db().commit()
+    get_db().commit()
     return make_response(jsonify({'message': f'Review status updated to {new_status}'}), 200)
 
 
@@ -200,10 +200,10 @@ def update_review_status(review_id):
 # Permanently delete a fake or inappropriate review
 @jordan.route('/reviews/<int:review_id>', methods=['DELETE'])
 def delete_review(review_id):
-    cursor = db.get_db().cursor()
+    cursor = get_db().cursor(dictionary=True)
     query = 'DELETE FROM Review WHERE review_id = %s'
     cursor.execute(query, (review_id,))
-    db.get_db().commit()
+    get_db().commit()
     return make_response(jsonify({'message': 'Review permanently deleted'}), 200)
 
 
@@ -213,7 +213,7 @@ def delete_review(review_id):
 # Return Activity_Metric rows showing DB growth over time
 @jordan.route('/analytics/activity-metrics', methods=['GET'])
 def get_activity_metrics():
-    cursor = db.get_db().cursor()
+    cursor = get_db().cursor(dictionary=True)
     query = '''
         SELECT metric_id, metric_date, reviews_count,
                active_users_count, restaurant_count

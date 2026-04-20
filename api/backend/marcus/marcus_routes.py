@@ -8,20 +8,31 @@ marcus_routes = Blueprint('marcus_routes', __name__)
 
 # [Marcus-1] GET /marcus/trends
 # Return avg rating trends across all restaurants or a summary
+# Optional: ?restaurant_id=7 to filter to one restaurant
 @marcus_routes.route('/trends', methods=['GET'])
 def get_rating_trends_summary():
     cursor = get_db().cursor(dictionary=True)
     try:
         current_app.logger.info('GET /marcus/trends')
-        cursor.execute('''
+        restaurant_id = request.args.get('restaurant_id', None)
+
+        query = '''
             SELECT  review_date,
                     ROUND(AVG(rating), 2) AS avg_rating,
                     COUNT(*)              AS total_reviews
             FROM    Review
             WHERE   review_status = 'approved'
+        '''
+        params = []
+        if restaurant_id:
+            query += ' AND restaurant_id = %s'
+            params.append(restaurant_id)
+
+        query += '''
             GROUP BY review_date
             ORDER BY review_date ASC
-        ''')
+        '''
+        cursor.execute(query, params)
         return jsonify(cursor.fetchall()), 200
     except Error as e:
         current_app.logger.error(f'Database error in get_rating_trends_summary: {e}')
@@ -32,25 +43,35 @@ def get_rating_trends_summary():
 
 # [Marcus-2] GET /marcus/waittime-ratings
 # Return avg wait time vs avg rating per restaurant for correlation analysis
+# Optional: ?restaurant_id=7 to filter to one restaurant
 @marcus_routes.route('/waittime-ratings', methods=['GET'])
 def get_wait_vs_rating():
     cursor = get_db().cursor(dictionary=True)
     try:
         current_app.logger.info('GET /marcus/waittime-ratings')
-        cursor.execute('''
+        restaurant_id = request.args.get('restaurant_id', None)
+
+        query = '''
             SELECT  r.restaurant_id,
                     r.name,
-                    ROUND(AVG(w.wait_minutes), 1) AS avg_wait_minutes,
-                    ROUND(AVG(rv.rating), 2)       AS avg_rating,
-                    COUNT(rv.review_id)            AS total_reviews
+                    COALESCE(ROUND(AVG(w.wait_minutes), 1), 0) AS avg_wait_minutes,
+                    COALESCE(ROUND(AVG(rv.rating), 2), 0)       AS avg_rating,
+                    COUNT(rv.review_id)                        AS total_reviews
             FROM    Restaurant r
             LEFT JOIN Wait_Time_Record w ON w.restaurant_id  = r.restaurant_id
             LEFT JOIN Review rv          ON rv.restaurant_id = r.restaurant_id
                                        AND rv.review_status = 'approved'
+        '''
+        params = []
+        if restaurant_id:
+            query += ' WHERE r.restaurant_id = %s'
+            params.append(restaurant_id)
+
+        query += '''
             GROUP BY r.restaurant_id, r.name
-            HAVING avg_wait_minutes IS NOT NULL AND avg_rating IS NOT NULL
             ORDER BY avg_wait_minutes DESC
-        ''')
+        '''
+        cursor.execute(query, params)
         return jsonify(cursor.fetchall()), 200
     except Error as e:
         current_app.logger.error(f'Database error in get_waittime_ratings: {e}')

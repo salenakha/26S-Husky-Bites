@@ -36,6 +36,10 @@ try:
             df = pd.DataFrame(data)
             
             if not df.empty:
+                # Ensure numeric types
+                if 'rating' in df.columns:
+                    df['rating'] = pd.to_numeric(df['rating'], errors='coerce')
+                
                 st.success(f"Generated data for {len(df)} reviews.")
                 st.dataframe(df.head(20))
                 

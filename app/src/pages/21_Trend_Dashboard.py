@@ -13,30 +13,46 @@ st.title("📈 Restaurant Rating Trends")
 st.write("Visualizing how restaurant quality has evolved over time.")
 
 try:
+    # Fetching the list of restaurants for selection
+    res = requests.get('http://web-api:4000/jordan/restaurants')
+    restaurants = res.json() if res.status_code == 200 else []
+    restaurant_options = {r['name']: r['restaurant_id'] for r in restaurants}
+    
+    selected_restaurant_name = st.selectbox("Select Restaurant to Analyze", 
+                                           options=["All Restaurants"] + list(restaurant_options.keys()))
+    
+    url = 'http://web-api:4000/marcus/trends'
+    if selected_restaurant_name != "All Restaurants":
+        url += f"?restaurant_id={restaurant_options[selected_restaurant_name]}"
+
     # Use the service name defined in docker-compose.yaml (web-api)
     # The API is mapped to port 4000
-    response = requests.get('http://web-api:4000/marcus/trends')
+    response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
         df = pd.DataFrame(data)
         
         if not df.empty:
+            # Fix potential type issues by converting to numeric
+            df['avg_rating'] = pd.to_numeric(df['avg_rating'], errors='coerce')
+            df['total_reviews'] = pd.to_numeric(df['total_reviews'], errors='coerce')
+            
             df['review_date'] = pd.to_datetime(df['review_date'])
             df = df.sort_values('review_date')
             
             # Line chart for average rating
-            st.subheader("Average Rating Over Time")
+            st.subheader(f"Average Rating Over Time for {selected_restaurant_name}")
             st.line_chart(df.set_index('review_date')['avg_rating'])
             
             # Area chart for review count
-            st.subheader("Total Review Activity")
+            st.subheader(f"Total Review Activity for {selected_restaurant_name}")
             st.area_chart(df.set_index('review_date')['total_reviews'])
             
             # Show the raw data table
             with st.expander("View Raw Data"):
                 st.dataframe(df)
         else:
-            st.info("No rating trend data found.")
+            st.info(f"No rating trend data found for {selected_restaurant_name}.")
     else:
         st.error(f"Error fetching data from API: {response.status_code}")
 except Exception as e:
