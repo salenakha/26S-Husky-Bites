@@ -4,8 +4,6 @@ import os
 import logging
 
 from backend.db_connection import init_app as init_db
-from backend.olivia.olivia_routes import olivia
-from backend.jordan.jordan import jordan
 
 
 def create_app():
@@ -30,8 +28,6 @@ def create_app():
     init_db(app)
 
     app.logger.info("create_app(): registering blueprints")
-    app.register_blueprint(olivia, url_prefix="/olivia")
-    app.register_blueprint(jordan, url_prefix="/jordan")
 
     # Jordan — system admin routes
     from backend.jordan.jordan_routes import jordan
