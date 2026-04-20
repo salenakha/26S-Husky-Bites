@@ -1,8 +1,3 @@
-##################################################
-# This is the main/entry-point file for the
-# sample application for your project
-##################################################
-
 import logging
 logging.basicConfig(format='%(filename)s:%(lineno)s:%(levelname)s -- %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -30,7 +25,7 @@ if st.button("Act as Olivia, an International Student",
     logger.info("Logging in as Olivia — International Student")
     st.switch_page('pages/00_Olivia_Home.py')
 
-if st.button("Act as John, a Political Strategy Advisor",
+if st.button("Olivia: International Student",
              type='primary',
              use_container_width=True):
     st.session_state['authenticated'] = True
@@ -39,18 +34,29 @@ if st.button("Act as John, a Political Strategy Advisor",
     logger.info("Logging in as Political Strategy Advisor Persona")
     st.switch_page('pages/00_Pol_Strat_Home.py')
 
-if st.button('Act as Mohammad, a USAID Worker',
-             type='primary',
-             use_container_width=True):
-    st.session_state['authenticated'] = True
-    st.session_state['role'] = 'usaid_worker'
-    st.session_state['first_name'] = 'Mohammad'
-    st.switch_page('pages/10_USAID_Worker_Home.py')
-
-if st.button('Act as System Administrator',
+if st.button("Jordan: System Administrator",
              type='primary',
              use_container_width=True):
     st.session_state['authenticated'] = True
     st.session_state['role'] = 'administrator'
-    st.session_state['first_name'] = 'SysAdmin'
-    st.switch_page('pages/20_Admin_Home.py')
+    st.session_state['first_name'] = 'Jordan'
+    logger.info("Logging in as Jordan (System Admin)")
+    st.switch_page('pages/10_Jordan_Home.py')
+
+if st.button("Marcus: Data Analyst",
+             type='primary',
+             use_container_width=True):
+    st.session_state['authenticated'] = True
+    st.session_state['role'] = 'analyst'
+    st.session_state['first_name'] = 'Marcus'
+    logger.info("Logging in as Marcus (Data Analyst)")
+    st.switch_page('pages/20_Marcus_Home.py')
+
+if st.button("Maya: Pre-Med Student",
+             type='primary',
+             use_container_width=True):
+    st.session_state['authenticated'] = True
+    st.session_state['role'] = 'student_premed'
+    st.session_state['first_name'] = 'Maya'
+    logger.info("Logging in as Maya (Pre-Med Student)")
+    st.switch_page('pages/30_Maya_Home.py')
