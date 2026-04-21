@@ -7,8 +7,8 @@ marcus_routes = Blueprint('marcus_routes', __name__)
 
 
 # [Marcus-1] GET /marcus/trends
-# Return avg rating trends across all restaurants or a summary
-# Optional: ?restaurant_id=7 to filter to one restaurant
+# Return avg rating trends across all locations of a restaurant (by name)
+# Optional: ?restaurant_id=7 to filter to all locations of that restaurant
 @marcus_routes.route('/trends', methods=['GET'])
 def get_rating_trends_summary():
     cursor = get_db().cursor(dictionary=True)
@@ -17,20 +17,23 @@ def get_rating_trends_summary():
         restaurant_id = request.args.get('restaurant_id', None)
 
         query = '''
-            SELECT  review_date,
-                    ROUND(AVG(rating), 2) AS avg_rating,
+            SELECT  rv.review_date,
+                    ROUND(AVG(rv.rating), 2) AS avg_rating,
                     COUNT(*)              AS total_reviews
-            FROM    Review
-            WHERE   review_status = 'approved'
+            FROM    Review rv
+            JOIN    Restaurant r ON rv.restaurant_id = r.restaurant_id
+            WHERE   1=1
         '''
         params = []
         if restaurant_id:
-            query += ' AND restaurant_id = %s'
+            query += ' AND r.name = (SELECT name FROM Restaurant WHERE restaurant_id = %s)'
             params.append(restaurant_id)
+        else:
+            query += ' AND rv.review_status = "approved"'
 
         query += '''
-            GROUP BY review_date
-            ORDER BY review_date ASC
+            GROUP BY rv.review_date
+            ORDER BY rv.review_date ASC
         '''
         cursor.execute(query, params)
         return jsonify(cursor.fetchall()), 200
@@ -42,8 +45,8 @@ def get_rating_trends_summary():
 
 
 # [Marcus-2] GET /marcus/waittime-ratings
-# Return avg wait time vs avg rating per restaurant for correlation analysis
-# Optional: ?restaurant_id=7 to filter to one restaurant
+# Return avg wait time vs avg rating per restaurant chain (by name)
+# Optional: ?restaurant_id=7 to filter to all locations of that restaurant
 @marcus_routes.route('/waittime-ratings', methods=['GET'])
 def get_wait_vs_rating():
     cursor = get_db().cursor(dictionary=True)
@@ -52,7 +55,7 @@ def get_wait_vs_rating():
         restaurant_id = request.args.get('restaurant_id', None)
 
         query = '''
-            SELECT  r.restaurant_id,
+            SELECT  MIN(r.restaurant_id) AS restaurant_id,
                     r.name,
                     COALESCE(ROUND(AVG(w.wait_minutes), 1), 0) AS avg_wait_minutes,
                     COALESCE(ROUND(AVG(rv.rating), 2), 0)       AS avg_rating,
@@ -64,11 +67,11 @@ def get_wait_vs_rating():
         '''
         params = []
         if restaurant_id:
-            query += ' WHERE r.restaurant_id = %s'
+            query += ' WHERE r.name = (SELECT name FROM Restaurant WHERE restaurant_id = %s)'
             params.append(restaurant_id)
 
         query += '''
-            GROUP BY r.restaurant_id, r.name
+            GROUP BY r.name
             ORDER BY avg_wait_minutes DESC
         '''
         cursor.execute(query, params)
@@ -82,7 +85,7 @@ def get_wait_vs_rating():
 
 # [Marcus-3] GET /marcus/export
 # Return anonymized approved reviews (no user_id) for external analysis
-# Optional: ?restaurant_id=7 to filter to one restaurant
+# Optional: ?restaurant_id=7 to filter to all locations of that restaurant
 @marcus_routes.route('/export', methods=['GET'])
 def export_reviews():
     cursor = get_db().cursor(dictionary=True)
@@ -103,7 +106,7 @@ def export_reviews():
         '''
         params = []
         if restaurant_id:
-            query += ' AND rv.restaurant_id = %s'
+            query += ' AND r.name = (SELECT name FROM Restaurant WHERE restaurant_id = %s)'
             params.append(restaurant_id)
 
         query += ' ORDER BY rv.review_date DESC'
@@ -145,7 +148,7 @@ def get_dietary_coverage():
 
 
 # [Marcus-5] GET /marcus/restaurant-performance
-# Return restaurants ranked by avg rating with price and cuisine breakdown
+# Return restaurants ranked by aggregated avg rating (by name)
 @marcus_routes.route('/restaurant-performance', methods=['GET'])
 def get_restaurant_performance():
     cursor = get_db().cursor(dictionary=True)
@@ -153,21 +156,17 @@ def get_restaurant_performance():
         current_app.logger.info('GET /marcus/restaurant-performance')
         limit = int(request.args.get('limit', 10))
         cursor.execute('''
-            SELECT  r.restaurant_id,
+            SELECT  MIN(r.restaurant_id) AS restaurant_id,
                     r.name,
-                    c.cuisine_name,
-                    r.price_range,
-                    ROUND(r.avg_rating, 2) AS avg_rating,
-                    r.dist_from_campus,
-                    r.halal_certified,
+                    GROUP_CONCAT(DISTINCT c.cuisine_name SEPARATOR ', ') AS cuisine_names,
+                    ROUND(AVG(rv.rating), 2) AS avg_rating,
                     COUNT(rv.review_id)    AS total_reviews
             FROM    Restaurant r
             JOIN    Cuisine c     ON c.cuisine_id     = r.cuisine_id
             LEFT JOIN Review rv   ON rv.restaurant_id = r.restaurant_id
                                  AND rv.review_status = 'approved'
             WHERE   r.status = 'open'
-            GROUP BY r.restaurant_id, r.name, c.cuisine_name,
-                     r.price_range, r.avg_rating, r.dist_from_campus, r.halal_certified
+            GROUP BY r.name
             ORDER BY avg_rating DESC
             LIMIT %s
         ''', (limit,))
