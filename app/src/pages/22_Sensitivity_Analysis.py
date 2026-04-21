@@ -11,7 +11,7 @@ import plotly.express as px
 st.set_page_config(layout='wide')
 SideBarLinks()
 
-st.title("⚖️ Wait Time vs. Rating Sensitivity Analysis")
+st.title("Wait Time vs. Rating Sensitivity Analysis")
 st.write("Exploring the correlation between wait times and restaurant ratings.")
 
 # Fetching the list of restaurants for selection

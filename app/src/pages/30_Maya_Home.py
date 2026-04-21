@@ -8,7 +8,7 @@ st.set_page_config(layout='wide')
 
 SideBarLinks()
 
-st.title(f"Welcome, {st.session_state['first_name']} 🍱")
+st.title(f"Welcome, {st.session_state['first_name']}! 👋")
 st.write('### What would you like to do today?')
 
 if st.button('Between-Class Meal Finder',
