@@ -46,7 +46,7 @@ params = {}
 if cuisine != "Any":
     params["cuisine"] = cuisine
 if max_price != "Any":
-    params["max_price"] = max_price.split(" ")[0]   # extract just the number
+    params["price_range"] = max_price.split(" ")[0]   # extract just the number
 if atmosphere != "Any":
     params["atmosphere"] = atmosphere
 

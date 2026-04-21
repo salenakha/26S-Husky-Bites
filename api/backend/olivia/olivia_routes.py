@@ -137,7 +137,69 @@ def compare_restaurants():
         cursor.close()
 
 
-# 1.6 POST save restaurant to favorites
+# 1.6 GET user's saved favorites
+@olivia.route('/students/<int:user_id>/favorites', methods=['GET'])
+def get_user_favorites(user_id):
+    cursor = get_db().cursor(dictionary=True)
+    try:
+        current_app.logger.info(f'GET /olivia/students/{user_id}/favorites')
+        cursor.execute('''
+            SELECT r.restaurant_id, r.name, r.location, c.cuisine_name, r.avg_rating, f.saved_date
+            FROM Favorite f
+            JOIN Restaurant r ON f.restaurant_id = r.restaurant_id
+            JOIN Cuisine c ON r.cuisine_id = c.cuisine_id
+            WHERE f.user_id = %s
+            ORDER BY f.saved_date DESC
+        ''', (user_id,))
+        return jsonify(cursor.fetchall()), 200
+    except Error as e:
+        current_app.logger.error(f'Database error: {e}')
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+
+
+# 1.7 POST add a restaurant to user's favorites
+@olivia.route('/students/<int:user_id>/favorites', methods=['POST'])
+def add_user_favorite(user_id):
+    cursor = get_db().cursor(dictionary=True)
+    try:
+        current_app.logger.info(f'POST /olivia/students/{user_id}/favorites')
+        data = request.get_json()
+        if not data or 'restaurant_id' not in data:
+            return jsonify({'error': 'Missing required field: restaurant_id'}), 400
+        cursor.execute('''
+            INSERT INTO Favorite (user_id, restaurant_id, saved_date)
+            VALUES (%s, %s, CURDATE())
+        ''', (user_id, data['restaurant_id']))
+        get_db().commit()
+        return jsonify({'message': 'Restaurant saved to favorites'}), 201
+    except Error as e:
+        current_app.logger.error(f'Database error: {e}')
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+
+
+# 1.8 DELETE remove a restaurant from user's favorites
+@olivia.route('/students/<int:user_id>/favorites/<int:restaurant_id>', methods=['DELETE'])
+def remove_user_favorite(user_id, restaurant_id):
+    cursor = get_db().cursor(dictionary=True)
+    try:
+        current_app.logger.info(f'DELETE /olivia/students/{user_id}/favorites/{restaurant_id}')
+        cursor.execute('''
+            DELETE FROM Favorite WHERE user_id = %s AND restaurant_id = %s
+        ''', (user_id, restaurant_id))
+        get_db().commit()
+        return jsonify({'message': 'Removed from favorites'}), 200
+    except Error as e:
+        current_app.logger.error(f'Database error: {e}')
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+
+
+# 1.9 POST save restaurant to favorites (legacy route)
 @olivia.route('/favorites', methods=['POST'])
 def save_favorite():
     cursor = get_db().cursor(dictionary=True)
