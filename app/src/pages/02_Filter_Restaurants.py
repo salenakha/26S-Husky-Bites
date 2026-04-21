@@ -11,7 +11,7 @@ st.set_page_config(layout='wide')
 SideBarLinks()
 
 # ── Page header ───────────────────────────────────────────────────────────────
-st.title("🔍 Filter Restaurants")
+st.title("Filter Restaurants")
 st.write("Narrow down your options by cuisine, price, and atmosphere.")
 st.divider()
 

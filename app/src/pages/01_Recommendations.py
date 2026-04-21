@@ -11,7 +11,7 @@ st.set_page_config(layout='wide')
 SideBarLinks()
 
 # ── Page header ───────────────────────────────────────────────────────────────
-st.title("🍽️ Student Recommendations")
+st.title("Student Recommendations")
 st.write("Restaurants reviewed and rated by fellow Northeastern students — no tourists, no noise.")
 st.divider()
 

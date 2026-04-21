@@ -10,7 +10,7 @@ st.set_page_config(layout='wide')
 SideBarLinks()
 
 # ── Page header ───────────────────────────────────────────────────────────────
-st.title("❤️ My Saved Favorites")
+st.title("My Saved Favorites")
 st.write("Restaurants you've saved to revisit later.")
 st.divider()
 
