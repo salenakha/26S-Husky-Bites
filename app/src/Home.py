@@ -27,16 +27,16 @@ if st.button("Olivia: International Student",
              type='primary',
              use_container_width=True):
     st.session_state['authenticated'] = True
-    st.session_state['role'] = 'pol_strat_advisor'
+    st.session_state['role'] = 'olivia'
     st.session_state['first_name'] = 'Olivia'
     logger.info("Logging in as Olivia (International Student)")
-    st.switch_page('pages/00_Pol_Strat_Home.py')
+    st.switch_page('pages/00_Olivia_Home.py')
 
 if st.button("Jordan: System Administrator",
              type='primary',
              use_container_width=True):
     st.session_state['authenticated'] = True
-    st.session_state['role'] = 'administrator'
+    st.session_state['role'] = 'jordan'
     st.session_state['first_name'] = 'Jordan'
     logger.info("Logging in as Jordan (System Admin)")
     st.switch_page('pages/20_Jordan_Home.py')
@@ -45,7 +45,7 @@ if st.button("Marcus: Data Analyst",
              type='primary',
              use_container_width=True):
     st.session_state['authenticated'] = True
-    st.session_state['role'] = 'analyst'
+    st.session_state['role'] = 'marcus'
     st.session_state['first_name'] = 'Marcus'
     logger.info("Logging in as Marcus (Data Analyst)")
     st.switch_page('pages/20_Marcus_Home.py')
@@ -54,7 +54,7 @@ if st.button("Maya: Pre-Med Student",
              type='primary',
              use_container_width=True):
     st.session_state['authenticated'] = True
-    st.session_state['role'] = 'usaid_worker'
+    st.session_state['role'] = 'maya'
     st.session_state['first_name'] = 'Maya'
     logger.info("Logging in as Maya (Pre-Med Student)")
-    st.switch_page('pages/10_USAID_Worker_Home.py')
+    st.switch_page('pages/30_Maya_Home.py')

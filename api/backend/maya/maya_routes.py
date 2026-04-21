@@ -8,7 +8,7 @@ maya = Blueprint('maya', __name__)
 @maya.route('/restaurants/<int:id>/wait_time', methods=['GET'])
 def get_wait_time(id):
     current_app.logger.info(f'GET /maya/restaurants/{id}/wait_time')
-    cursor = get_db().cursor()
+    cursor = get_db().cursor(dictionary=True)
     cursor.execute('''
         SELECT r.name, r.location, w.estimated_wait_time, w.wait_minutes, w.day_type, w.recorded_at
         FROM Restaurant r
@@ -28,7 +28,7 @@ def get_wait_time(id):
 def get_allergen_filter():
     current_app.logger.info('GET /maya/restaurants/allergen-filter')
     tag = request.args.get('tag', 'nut-free')
-    cursor = get_db().cursor()
+    cursor = get_db().cursor(dictionary=True)
     cursor.execute('''
         SELECT r.name, r.location, r.avg_rating, r.price_range,
                dt.dietary_tag_name, dt.dietary_tag_category
@@ -46,7 +46,7 @@ def get_allergen_filter():
 @maya.route('/restaurants/halal', methods=['GET'])
 def get_halal():
     current_app.logger.info('GET /maya/restaurants/halal')
-    cursor = get_db().cursor()
+    cursor = get_db().cursor(dictionary=True)
     cursor.execute('''
         SELECT name, location, dist_from_campus, halal_certified, avg_rating, price_range, hours
         FROM Restaurant
@@ -61,7 +61,7 @@ def get_halal():
 @maya.route('/restaurants/between-class', methods=['GET'])
 def get_between_class():
     current_app.logger.info('GET /maya/restaurants/between-class')
-    cursor = get_db().cursor()
+    cursor = get_db().cursor(dictionary=True)
     cursor.execute('''
         SELECT r.name, r.location, r.dist_from_campus, w.wait_minutes,
                (r.dist_from_campus * 12 + w.wait_minutes) AS estimated_total_minutes,
@@ -79,13 +79,13 @@ def get_between_class():
     ''')
     rows = cursor.fetchall()
     return jsonify(rows), 200
- 
- 
+
+
 # GET /maya/leaderboard
 @maya.route('/leaderboard', methods=['GET'])
 def get_leaderboard():
     current_app.logger.info('GET /maya/leaderboard')
-    cursor = get_db().cursor()
+    cursor = get_db().cursor(dictionary=True)
     cursor.execute('''
         SELECT le.rank_num, r.name, r.location, r.dist_from_campus,
                le.score_avg, r.avg_rating, r.halal_certified, r.price_range
@@ -97,13 +97,12 @@ def get_leaderboard():
     rows = cursor.fetchall()
     return jsonify(rows), 200
  
- 
 # POST /maya/reviews
 @maya.route('/reviews', methods=['POST'])
 def submit_review():
     current_app.logger.info('POST /maya/reviews')
     data = request.json
-    cursor = get_db().cursor()
+    cursor = get_db().cursor(dictionary=True)
     cursor.execute('''
         INSERT INTO Review (user_id, restaurant_id, rating, review_text, review_date, review_status)
         VALUES (%s, %s, %s, %s, CURDATE(), 'approved')
@@ -117,7 +116,7 @@ def submit_review():
 def update_review(id):
     current_app.logger.info(f'PUT /maya/reviews/{id}')
     data = request.json
-    cursor = get_db().cursor()
+    cursor = get_db().cursor(dictionary=True)
     cursor.execute('''
         UPDATE Review SET rating = %s, review_text = %s WHERE review_id = %s
     ''', (data['rating'], data['review_text'], id))
@@ -129,7 +128,7 @@ def update_review(id):
 @maya.route('/reviews/<int:id>', methods=['DELETE'])
 def delete_review(id):
     current_app.logger.info(f'DELETE /maya/reviews/{id}')
-    cursor = get_db().cursor()
+    cursor = get_db().cursor(dictionary=True)
     cursor.execute('DELETE FROM Review WHERE review_id = %s', (id,))
     get_db().commit()
     return jsonify({'message': 'Review deleted'}), 200

@@ -18,14 +18,16 @@ st.write("Exploring the correlation between wait times and restaurant ratings.")
 try:
     res = requests.get('http://web-api:4000/jordan/restaurants')
     restaurants = res.json() if res.status_code == 200 else []
-    restaurant_options = {r['name']: r['restaurant_id'] for r in restaurants}
     
-    selected_restaurant_name = st.selectbox("Select Restaurant to Analyze", 
-                                           options=["All Restaurants"] + list(restaurant_options.keys()))
+    # Use name and ID to ensure uniqueness in the dropdown
+    restaurant_options = {f"{r['name']} (ID: {r['restaurant_id']})": r['restaurant_id'] for r in restaurants}
+    
+    selected_option = st.selectbox("Select Restaurant to Analyze", 
+                                  options=["All Restaurants"] + list(restaurant_options.keys()))
     
     url = 'http://web-api:4000/marcus/waittime-ratings'
-    if selected_restaurant_name != "All Restaurants":
-        url += f"?restaurant_id={restaurant_options[selected_restaurant_name]}"
+    if selected_option != "All Restaurants":
+        url += f"?restaurant_id={restaurant_options[selected_option]}"
 
     response = requests.get(url)
     if response.status_code == 200:
@@ -56,7 +58,7 @@ try:
                                  "avg_rating": "Average Rating",
                                  "total_reviews": "Total Reviews"
                              },
-                             title=f"Wait Time vs. Rating for {selected_restaurant_name}")
+                             title=f"Wait Time vs. Rating for {selected_option}")
             
             st.plotly_chart(fig, use_container_width=True)
             
@@ -70,7 +72,7 @@ try:
             with st.expander("View Full Data Table"):
                 st.dataframe(df)
         else:
-            st.info(f"No data found for {selected_restaurant_name}.")
+            st.info(f"No data found for {selected_option}.")
     else:
         st.error(f"Error fetching data from API: {response.status_code}")
 except Exception as e:

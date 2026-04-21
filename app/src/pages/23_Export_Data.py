@@ -19,15 +19,17 @@ try:
     response = requests.get('http://web-api:4000/jordan/restaurants')
     restaurants = response.json() if response.status_code == 200 else []
     
-    restaurant_options = {r['name']: r['restaurant_id'] for r in restaurants}
-    selected_restaurant_name = st.selectbox("Select Restaurant (optional)", 
-                                           options=["All Restaurants"] + list(restaurant_options.keys()))
+    # Use name and ID to ensure uniqueness in the dropdown
+    restaurant_options = {f"{r['name']} (ID: {r['restaurant_id']})": r['restaurant_id'] for r in restaurants}
+    
+    selected_option = st.selectbox("Select Restaurant (optional)", 
+                                  options=["All Restaurants"] + list(restaurant_options.keys()))
     
     # Trigger the export when a button is clicked
     if st.button("Generate Export Data", type="primary"):
         url = 'http://web-api:4000/marcus/export'
-        if selected_restaurant_name != "All Restaurants":
-            url += f"?restaurant_id={restaurant_options[selected_restaurant_name]}"
+        if selected_option != "All Restaurants":
+            url += f"?restaurant_id={restaurant_options[selected_option]}"
             
         # Fetching the export data from the API
         response = requests.get(url)
@@ -50,11 +52,11 @@ try:
                 st.download_button(
                     label="Download CSV",
                     data=csv,
-                    file_name=f"restaurant_export_{selected_restaurant_name.replace(' ', '_')}.csv",
+                    file_name=f"restaurant_export_{selected_option.replace(' ', '_')}.csv",
                     mime='text/csv'
                 )
             else:
-                st.info("No data found for the selected restaurant.")
+                st.info(f"No data found for {selected_option}.")
         else:
             st.error(f"Error generating export data: {response.status_code}")
 except Exception as e:

@@ -18,7 +18,7 @@ def olivia_home_nav():
 # ---- Role: jordan -----------------------------------------------------------
 
 def jordan_home_nav():
-    st.sidebar.page_link("pages/10_Jordan_Home.py", label="Jordan Home", icon="🛠️")
+    st.sidebar.page_link("pages/20_Jordan_Home.py", label="Jordan Home", icon="🛠️")
 
 
 # ---- Role: marcus -----------------------------------------------------------

@@ -21,7 +21,13 @@ try:
         if results:
             st.success(f'Found {len(results)} fast options near you!')
             for i, r in enumerate(results, 1):
-                with st.expander(f"#{i} — {r['name']} (~{r['estimated_total_minutes']} min total)"):
+                # Ensure numeric types
+                r['estimated_total_minutes'] = float(r['estimated_total_minutes'])
+                r['dist_from_campus'] = float(r['dist_from_campus'])
+                r['wait_minutes'] = int(r['wait_minutes'])
+                r['avg_rating'] = float(r['avg_rating'])
+                
+                with st.expander(f"#{i} — {r['name']} (~{round(r['estimated_total_minutes'], 1)} min total)"):
                     col1, col2, col3 = st.columns(3)
                     with col1:
                         st.metric("Walk Time", f"{round(r['dist_from_campus'] * 12)} min")

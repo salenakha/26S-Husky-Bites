@@ -26,9 +26,11 @@ def get_rating_trends_summary():
         '''
         params = []
         if restaurant_id:
+            # For a specific restaurant, include all reviews for trends
             query += ' AND r.name = (SELECT name FROM Restaurant WHERE restaurant_id = %s)'
             params.append(restaurant_id)
         else:
+            # General trend only shows approved reviews
             query += ' AND rv.review_status = "approved"'
 
         query += '''
@@ -62,13 +64,22 @@ def get_wait_vs_rating():
                     COUNT(rv.review_id)                        AS total_reviews
             FROM    Restaurant r
             LEFT JOIN Wait_Time_Record w ON w.restaurant_id  = r.restaurant_id
-            LEFT JOIN Review rv          ON rv.restaurant_id = r.restaurant_id
-                                       AND rv.review_status = 'approved'
         '''
+        
         params = []
         if restaurant_id:
-            query += ' WHERE r.name = (SELECT name FROM Restaurant WHERE restaurant_id = %s)'
+            # For a specific restaurant, include all reviews to help analysis
+            query += '''
+                LEFT JOIN Review rv ON rv.restaurant_id = r.restaurant_id
+                WHERE r.name = (SELECT name FROM Restaurant WHERE restaurant_id = %s)
+            '''
             params.append(restaurant_id)
+        else:
+            # For general view, only include approved reviews for quality summary
+            query += '''
+                LEFT JOIN Review rv ON rv.restaurant_id = r.restaurant_id
+                                   AND rv.review_status = 'approved'
+            '''
 
         query += '''
             GROUP BY r.name
