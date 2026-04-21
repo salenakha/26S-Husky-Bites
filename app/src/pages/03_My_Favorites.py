@@ -16,7 +16,7 @@ st.divider()
 
 # ── Get the logged-in user's ID from session state ────────────────────────────
 # user_id is stored in session_state when the user logs in on Home.py
-user_id = st.session_state.get('user_id', 42)   # default to 42 (Olivia's mock user)
+user_id = st.session_state.get('user_id', 1)
 
 # ── Fetch favorites from Flask API ───────────────────────────────────────────
 FAV_URL = f"http://web-api:4000/olivia/students/{user_id}/favorites"

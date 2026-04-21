@@ -19,7 +19,7 @@ def get_student_recommendations():
             FROM Restaurant r
             JOIN Review rv ON r.restaurant_id = rv.restaurant_id
             JOIN User u ON rv.user_id = u.user_id
-            WHERE u.role = 'student'
+            WHERE u.role IN ('int_student', 'pre_med_student')
             AND rv.review_status = 'approved'
             AND r.status = 'open'
             ORDER BY rv.rating DESC, r.dist_from_campus ASC
