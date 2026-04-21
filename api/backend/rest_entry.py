@@ -8,8 +8,6 @@ from backend.jordan.jordan_routes import jordan
 from backend.marcus.marcus_routes import marcus_routes
 from backend.maya.maya_routes import maya
 from backend.olivia.olivia_routes import olivia
-from backend.simple.simple_routes import simple_routes
-
 
 def create_app():
     app = Flask(__name__)
@@ -53,8 +51,5 @@ def create_app():
 
     # Maya — pre-med student routes
     app.register_blueprint(maya, url_prefix="/maya")
-
-    # Simple — basic routes for testing and demonstration
-    app.register_blueprint(simple_routes, url_prefix="/")
 
     return app
