@@ -9,7 +9,7 @@ from modules.nav import SideBarLinks
 st.set_page_config(layout='wide')
 SideBarLinks()
 
-st.title("📥 Export Restaurant Data")
+st.title("Export Restaurant Data")
 st.write("Download anonymized review data for external analysis.")
 
 st.subheader("Filter Export Settings")

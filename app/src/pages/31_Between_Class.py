@@ -9,7 +9,7 @@ st.set_page_config(layout='wide')
 
 SideBarLinks()
 
-st.title('Between-Class Meal Finder ⚡')
+st.title('Between-Class Meal Finder')
 st.write('Find the fastest meal option near you based on walk time + wait time.')
 
 API_URL = 'http://web-api:4000/maya/restaurants/between-class'
