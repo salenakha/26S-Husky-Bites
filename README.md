@@ -1,7 +1,7 @@
-# HuskyBites 
+# HuskyBites 🐾
 <img width="1035" height="339" alt="Screenshot 2026-04-19 at 6 17 57 PM" src="https://github.com/user-attachments/assets/e3408c25-2f59-40e1-9a68-a74493acd17b" />
 
-### CS 3200 Spring 2026
+## Overview
 
 HuskyBites is a restaurant discovery and rating app built exclusively for Northeastern University students. Unlike general-purpose platforms like Yelp or Google Maps, HuskyBites only surfaces dining options within a 30-minute walk of the NU Boston campus, and every review comes from a fellow Husky.
 
@@ -55,7 +55,7 @@ This repository is organized into five main directories:
 - `./api` — the Flask REST API
 - `./database-files` — SQL scripts to initialize the MySQL database
 - `./datasets` — folder for storing datasets
-- `./ml-src` — folder for ML model development (Jupyter notebooks, training scripts)
+- `./ml-src` — folder for future ML model development (Jupyter notebooks, training scripts)
 
 The repo also contains a `docker-compose.yaml` file used to set up Docker containers for the frontend, REST API, and MySQL database.
 
@@ -70,7 +70,7 @@ The repo also contains a `docker-compose.yaml` file used to set up Docker contai
 1. Set up the `.env` file in the `api/` folder based on the `.env.template` file.
    1. Make a copy of `.env.template` and name it `.env`.
    1. Open the new `.env` file.
-   1. On the last line, delete the `<...>` placeholder text and set a password. Don't reuse passwords from other services.
+   1. On the last line, delete the `<...>` placeholder text and set a password.
 
 1. Start all containers:
    ```bash
