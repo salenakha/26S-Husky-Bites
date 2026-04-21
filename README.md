@@ -60,23 +60,31 @@ This repository is organized into five main directories:
 The repo also contains a `docker-compose.yaml` file used to set up Docker containers for the frontend, REST API, and MySQL database.
 
 ## Setting Up the Repo
-
+ 
 1. Clone the repository to your local machine:
    ```bash
    git clone https://github.com/salenakha/26S-Husky-Bites.git
    cd 26S-Husky-Bites
    ```
-
-1. Set up the `.env` file in the `api/` folder based on the `.env.template` file.
+ 
+2. Set up the `.env` file in the `api/` folder based on the `.env.template` file.
    1. Make a copy of `.env.template` and name it `.env`.
-   1. Open the new `.env` file.
-   1. On the last line, delete the `<...>` placeholder text and set a password.
-
-1. Start all containers:
+   2. Open the new `.env` file and fill in the following values:
+      ```
+      SECRET_KEY=somesecretkey
+      DB_USER=root
+      DB_HOST=db
+      DB_PORT=3306
+      DB_NAME=restaurant_db
+      MYSQL_ROOT_PASSWORD=somepassword
+      ```
+   3. Replace `somesecretkey` and `somepassword` with any values you choose — these are for local development only.
+   4. Do not commit the `.env` file to GitHub. It is already listed in `.gitignore`.
+3. Start all containers:
    ```bash
    docker compose up -d
    ```
-
+ 
    This will spin up three services:
    - **db** — MySQL database, auto-executes all `.sql` files in `database-files/` on first creation
    - **api** — Flask REST API, running on `http://localhost:4000`
@@ -127,4 +135,4 @@ HuskyBites uses a simple RBAC system in Streamlit — no real authentication, ju
 
 ## Demo Video
 
-[Watch the HuskyBites demo -- COMING SOON]
+[Watch the HuskyBites Demo Video](https://www.youtube.com/watch?v=bJYN1V0BbMw)
