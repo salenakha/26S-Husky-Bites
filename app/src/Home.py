@@ -13,9 +13,6 @@ SideBarLinks(show_home=True)
 
 logger.info("Loading the Home page of the app")
 
-# add logo here
-with open("assets/huskybites_logo.svg", "rb") as f:
-    st.sidebar.image(f.read(), width=150)
 
 st.write("## Welcome to HuskyBites")
 st.write("#### The restaurant discovery app built for Northeastern students.")
