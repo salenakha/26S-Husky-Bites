@@ -29,6 +29,7 @@ if st.button("Olivia: International Student",
     st.session_state['authenticated'] = True
     st.session_state['role'] = 'olivia'
     st.session_state['first_name'] = 'Olivia'
+    st.session_state['user_id'] = 1 # gmeriot0, int_student
     logger.info("Logging in as Olivia (International Student)")
     st.switch_page('pages/00_Olivia_Home.py')
 
@@ -38,6 +39,7 @@ if st.button("Jordan: System Administrator",
     st.session_state['authenticated'] = True
     st.session_state['role'] = 'jordan'
     st.session_state['first_name'] = 'Jordan'
+    st.session_state['user_id'] = 10 # tgreenman9, admin
     logger.info("Logging in as Jordan (System Admin)")
     st.switch_page('pages/20_Jordan_Home.py')
 
@@ -47,6 +49,7 @@ if st.button("Marcus: Data Analyst",
     st.session_state['authenticated'] = True
     st.session_state['role'] = 'marcus'
     st.session_state['first_name'] = 'Marcus'
+    st.session_state['user_id'] = 2 # aclaybourne1, analyst
     logger.info("Logging in as Marcus (Data Analyst)")
     st.switch_page('pages/20_Marcus_Home.py')
 
@@ -56,5 +59,6 @@ if st.button("Maya: Pre-Med Student",
     st.session_state['authenticated'] = True
     st.session_state['role'] = 'maya'
     st.session_state['first_name'] = 'Maya'
+    st.session_state['user_id'] = 5 # jcurran4, pre_med_student
     logger.info("Logging in as Maya (Pre-Med Student)")
     st.switch_page('pages/30_Maya_Home.py')

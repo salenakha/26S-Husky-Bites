@@ -103,12 +103,18 @@ def submit_review():
     current_app.logger.info('POST /maya/reviews')
     data = request.json
     cursor = get_db().cursor(dictionary=True)
-    cursor.execute('''
-        INSERT INTO Review (user_id, restaurant_id, rating, review_text, review_date, review_status)
-        VALUES (%s, %s, %s, %s, CURDATE(), 'approved')
-    ''', (data['user_id'], data['restaurant_id'], data['rating'], data['review_text']))
-    get_db().commit()
-    return jsonify({'message': 'Review submitted'}), 201
+    try:
+        cursor.execute('''
+            INSERT INTO Review (user_id, restaurant_id, rating, review_text, review_date, review_status)
+            VALUES (%s, %s, %s, %s, CURDATE(), 'approved')
+        ''', (data['user_id'], data['restaurant_id'], data['rating'], data['review_text']))
+        get_db().commit()
+        return jsonify({'message': 'Review submitted'}), 201
+    except Error as e:
+        current_app.logger.error(f"Database error: {e}")
+        return jsonify({'error': str(e)}), 400
+    finally:
+        cursor.close()
  
  
 # PUT /maya/reviews/<id>
